@@ -11,7 +11,7 @@ class gameLayout extends Component<gameLayoutProps> {
 
     render() {
         return (
-            <main className="bg-indigo-700 ">{this.props.children} </main>
+            <main className="bg-blue-700 ">{this.props.children} </main>
 
         )
     }

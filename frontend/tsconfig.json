@@ -24,7 +24,7 @@
     "**/*.ts",
 
     "**/*.tsx"
-  ],
+, "pages/coinbase.js"  ],
   "exclude": [
     "node_modules",
     "next-env.d.ts"

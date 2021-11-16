@@ -1,5 +1,5 @@
 {
-  "name": "cryptoluckygames",
+  "name": "luckygames",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -11,6 +11,7 @@
     "@hookform/resolvers": "^2.8.3",
     "@reduxjs/toolkit": "^1.6.2",
     "axios": "^0.24.0",
+    "coinbase": "^2.0.8",
     "instanceof": "^1.0.6",
     "js-cookie": "^3.0.1",
     "jwt-decode": "^3.1.2",
@@ -25,6 +26,8 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^5.5.0",
+    "@types/bcrypt": "^5.0.0",
+    "@types/cookie-parser": "^1.4.2",
     "@types/js-cookie": "^3.0.0",
     "@types/jwt-decode": "^3.1.0",
     "@types/node": "16.11.6",

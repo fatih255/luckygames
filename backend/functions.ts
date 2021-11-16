@@ -30,21 +30,35 @@ function generateAccessToken(infos: object) {
 
 
 
-function validateToken(userToken: string | null, getinfo: boolean = false) {
-    let tokenvalidate = false;
+function validateToken(userToken: string | null, getinfo: boolean = false): boolean | object {
+
+    let tokenvalidate: object | boolean = false;
     if (userToken) {
         const token = userToken?.split(' ')[1] || ''
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload
-        //not expired token time
-        tokenvalidate = decoded.exp as number * 1000 > new Date().getTime()
 
-        if (tokenvalidate && getinfo) {
-            return decoded
-        }
-        return tokenvalidate
+        // invalid token
+        jwt.verify(token, process.env.JWT_SECRET as string, function (err, decoded) {
+            if (!err) {
+                if (decoded?.exp as number * 1000 > new Date().getTime()) {
+                    if (getinfo) {
+                        tokenvalidate = {
+                            id: decoded?.id,
+                            email: decoded?.email,
+                            phone: decoded?.phone,
+                            balance: decoded?.balance,
+                        }
+                    } else {
+                        tokenvalidate = true
+                    }
+                }
+            } else {
+                tokenvalidate = false
+            }
+        });
+
     }
 
-    return false
+    return tokenvalidate
 
 }
 

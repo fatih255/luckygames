@@ -21,5 +21,7 @@ module.exports = {
   },
   env: {
     SERVER_BASE_URL: 'http://localhost:8000',
+    COOKIE_USERID_SECRET:'$2a$15$DUYwi/wK4I29HVVzHRuT2uIfqJ.gAj/xjKd4p/fj17BsIbW486irO',
+    COINBASE_API:'xZ4JnQvnUURQ1DC1'
   }
 };

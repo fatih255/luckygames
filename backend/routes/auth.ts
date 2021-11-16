@@ -75,7 +75,7 @@ router.post('/signin', (req, res) => {
     let valid = validUser(req.body) // { signupType : email | phone , validate }
     if (valid.signupType === 'email') {
         getOneByEmail(req.body.email)
-            .then((user: { id: number, email: string | null, password: string, phone: string | null }) => {
+            .then((user: { id: number, email: string | null, password: string, phone: string | null, balance: number | 0 }) => {
                 if (user) {
                     bcrypt
                         .compare(req.body.password, user.password)
@@ -83,7 +83,7 @@ router.post('/signin', (req, res) => {
                             //if the passwords matched
                             if (result) {
                                 //generate token with user info
-                                const token = generateAccessToken({ id: user.id, email: user.email });
+                                const token = generateAccessToken({ id: user.id, email: user.email, phone: user.phone, balance: user.balance });
                                 //setting the 'set-cookie'
                                 const isSecure = req.app.get('env') != 'development';
 
@@ -93,11 +93,13 @@ router.post('/signin', (req, res) => {
                                         secure: isSecure, //Marks the cookie to be used with HTTPS only.
                                         signed: true //Indicates if the cookie should be signed.
                                     })
+                                    .cookie('UserLoggedIn', true)
                                     .status(200).json({
                                         user: {
                                             id: user.id,
                                             email: user.email,
                                             phone: user.phone,
+                                            balance: user.balance
                                         },
                                         message: 'Giriş Yapıldı'
                                     });
@@ -115,14 +117,14 @@ router.post('/signin', (req, res) => {
     }
     if (valid.signupType === 'phone') {
         getOneByPhone(req.body.phone)
-            .then((user: { id: number, email: string | null, password: string, phone: string | null }) => {
+            .then((user: { id: number, email: string | null, password: string, phone: string | null, balance: number | 0 }) => {
                 if (user) {
                     bcrypt
                         .compare(req.body.password, user.password)
                         .then(function (result) {
                             //if the passwords matched
                             if (result) {
-                                const token = generateAccessToken({ id: user.id, email: user.email });
+                                const token = generateAccessToken({ id: user.id, email: user.email, phone: user.phone, balance: user.balance });
                                 const isSecure = req.app.get('env') != 'development';
                                 res
                                     .cookie('token', process.env.JWT_TOKEN_HEAD + ' ' + token, {
@@ -130,11 +132,13 @@ router.post('/signin', (req, res) => {
                                         secure: isSecure, //Marks the cookie to be used with HTTPS only.
                                         signed: true //Indicates if the cookie should be signed.
                                     })
+                                    .cookie('UserLoggedIn', true)
                                     .status(200).json({
                                         user: {
                                             id: user.id,
                                             email: user.email,
                                             phone: user.phone,
+                                            balance: user.balance
                                         },
                                         message: 'Giriş Yapıldı'
                                     });
@@ -155,11 +159,18 @@ router.post('/signin', (req, res) => {
 
 router.post('/check', (req, res) => {
     const userLoggedIn = validateToken(req.signedCookies.token, true);
-    if (userLoggedIn) {
+    if (typeof userLoggedIn === 'object') {
 
-        return res.status(200).json(userLoggedIn)
+        return res
+            .cookie('UserLoggedIn', true)
+            .status(200).json(userLoggedIn)
     } else {
-        res.status(401).send('Havent User')
+        if (userLoggedIn) {
+            return res.status(200).send('User Have')
+        } else {
+            return res.status(401).clearCookie("UserLoggedIn").clearCookie("token").send('Havent User')
+        }
+
     }
 
 

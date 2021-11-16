@@ -2,7 +2,7 @@ const knex = require('./connection')
 
 function getOne(id: number, withpassword: boolean = true) {
 
-    if (!withpassword) return knex('users').select('id', 'phone', 'email').where('id', id).first();
+    if (!withpassword) return knex('users').select('id', 'phone', 'email','balance').where('id', id).first();
 
     return knex('users').where('id', id).first();
 }

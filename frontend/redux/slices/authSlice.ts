@@ -1,23 +1,23 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-
 interface userState {
     loading: 'idle' | 'pending' | 'succeeded' | 'failed'
+    checkloading: 'idle' | 'pending' | 'succeeded' | 'failed'
     error: string | undefined
     user: {
         id: number | null,
         email: string | null,
         phone: string | null,
+        balance: number | null
     }
 }
 
 // Define the initial state using that type
 const initialState: userState = {
     loading: 'idle',
+    checkloading: 'idle',
     error: undefined,
-    user: { id: null, email: null, phone: null },
-
-
+    user: { id: null, email: null, phone: null, balance: null },
 }
 
 
@@ -118,15 +118,16 @@ export const authSlice = createSlice({
             }),
             //check thunk
             builder.addCase(Check.pending, (state, action) => {
-                state.loading = 'pending'
+                state.checkloading = 'pending'
             }),
             builder.addCase(Check.fulfilled, (state, action) => {
-                state.loading = 'succeeded'
-                state.user.id = action.payload.id
+                state.checkloading = 'succeeded'
+                state.user = action.payload
+
             }),
             builder.addCase(Check.rejected, (state, action) => {
-                state.loading = 'failed'
-                state.user = { id: null, email: null, phone: null }
+                state.checkloading = 'failed'
+                state.user = { id: null, email: null, phone: null, balance: null }
             })
     }
 })
