@@ -22,7 +22,6 @@
   "include": [
     "custom-next-env.d.ts",
     "**/*.ts",
-
     "**/*.tsx"
 , "pages/coinbase.js"  ],
   "exclude": [

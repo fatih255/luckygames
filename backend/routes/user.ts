@@ -2,6 +2,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import { getOne } from '../db/User';
+import { getAllGameRooms, getOneById } from '../db/Game';
 
 dotenv.config();
 const router = express.Router()
@@ -30,8 +31,23 @@ router.get('/info/:id', (req, res) => {
         })
     }
 
+})
+
+router.get('/get-all-active-game-rooms', (req, res) => {
+    getAllGameRooms(true)
+        .then((rooms: []) => {
+            res.json([...rooms])
+        })
+})
 
 
+router.get('/getgameinfo/:id', (req, res) => {
+    getOneById(Number(req.params.id))
+        .then((info: object) => {
+            res.json({ ...info })
+        }).catch((err: object) => {
+            res.status(404).send(err)
+        })
 })
 
 

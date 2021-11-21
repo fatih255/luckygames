@@ -7,7 +7,7 @@ interface Props {
 }
 
 interface item {
-    text: string,
+    text: string | null,
     icon: JSX.Element,
     value?: string,
     valueclass?: string

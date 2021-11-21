@@ -3,13 +3,28 @@ import { FaUsers } from 'react-icons/fa'
 import { GiTrophyCup } from 'react-icons/gi'
 import { BiUser } from 'react-icons/bi'
 import { AiFillFire } from 'react-icons/ai'
-import Userdot from '../../src/components/Userdot'
+import Userdot from '../../src/components/userComponents/Userdot'
 import GameLayout from '../../layouts/GameLayout'
-import GameArea from '../../src/components/GameArea'
-import Image from 'next/image'
-import GameNavItem from '../../src/components/GameNavItem'
+import GameArea from '../../src/components/userComponents/GameArea'
+import GameNavItem from '../../src/components/userComponents/GameNavItem'
+import { useAppSelector } from '../../redux/hooks'
+import { GetStaticProps } from 'next'
+import useSWR, { SWRConfig } from 'swr'
+import { GameRoomCardProps } from '../../src/components/userComponents/GameRoomCard'
+import { useRouter } from 'next/router'
 
-export default function room() {
+
+export default function room(roomInfo: GameRoomCardProps) {
+
+    const { email } = useAppSelector(state => state.auth.user)
+
+    const router = useRouter()
+    const { id } = router.query
+
+    const fetcher = (url: RequestInfo) => fetch(url, { credentials: 'include' }).then((res) => res.json())
+    //const { mutate } = useSWRConfig()
+    const { data, mutate } = useSWR(`${process.env.SERVER_BASE_URL}/api/user/getgameinfo/${id}`, fetcher)
+
     return (
         <div className="md:flex lg:grid  grid-cols-4 grid-rows-4 gap-5 px-[5%] py-[5%]  h-screen ">
             <div className=" col-span-4 lg:col-span-1 bg-white px-4 py-4 rounded-xl justify-start items-center ">
@@ -31,7 +46,7 @@ export default function room() {
 
                     <GameNavItem items={[
                         {
-                            text: "Oyuncu Adı",
+                            text: email,
                             icon: < BiUser className="text-blue-800 w-10 h-10" />
                         },
                         {
@@ -45,19 +60,13 @@ export default function room() {
                             icon: <GiTrophyCup className="text-blue-800 w-10 h-10" />,
                             value: "0",
                             valueclass: "bg-blue-500"
-                        },
-                        {
-                            text: "Kripto Para Birimi",
-                            icon: < Image width={40} height={40} src="/assets/cryptoicons/shib.png" />,
-                            value: "SHIB",
-                            valueclass: "bg-blue-300"
                         }
 
                     ]} />
 
                 </div>
                 <div className=" bg-gray-100 rounded-xl mt-4 md:mt-0 " >
-                    <GameArea />
+                    <GameArea {...data} />
                 </div>
             </div>
 
@@ -72,4 +81,7 @@ export default function room() {
     )
 }
 
+
+
 room.layout = GameLayout
+

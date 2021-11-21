@@ -2,28 +2,38 @@ import React from 'react'
 import Link from 'next/link'
 import { FaUsers } from 'react-icons/fa'
 import GameLayout from '../../layouts/GameLayout'
+import { AiOutlineArrowLeft } from 'react-icons/ai'
+import GameRoomCard, { GameRoomCardProps } from '../../src/components/userComponents/GameRoomCard'
+import useSWR from 'swr'
 
 
 export default function home() {
+
+    const fetcher = (url: RequestInfo) => fetch(url, { credentials: 'include' }).then((res) => res.json())
+    const { data, mutate } = useSWR(`${process.env.SERVER_BASE_URL}/api/user/get-all-active-game-rooms`, fetcher)
+
+
     return (
-        <div className=" h-screen bg-blue-800 ">
-            <h1>Mevcut Oyun Odaları</h1>
-            <div className="flex justify-center mx-20 my-20 ">
-                <div className="py-4  px-4 rounded-xl centered-shadow bg-white">
-                    <img className="w-16 mx-auto -mt-12" src="/assets/cryptoicons/shib.png" />
-                    <h2 className="text-4xl">SHIB Turnuvası</h2>
-                    <div className="mt-8 mb-8" >
-                        <p>Katılım Ücreti : </p>
-                        <span><b className="font-semibold text-blue-800 text-2xl">0.00000010</b></span>
-                    </div>
-                    <div className="flex justify-between" >
-                        <Link href="/game/room"><a className="rounded-lg transition duration-200 hover:bg-blue-500 hover:scale-110 self-center px-8 py-2 font-semibold text-white bg-blue-800">Katıl</a></Link>
-                        <div className="flex flex-col justify-center items-center">
-                            <FaUsers className="text-blue-700 w-12" />
-                            <span className="font-semibold text-xl">70/100</span>
-                        </div>
-                    </div>
+        <div className=" h-screen bg-blue-800 py-10 px-5">
+
+            <Link href="/">
+                <div className="flex justify-start items-center cursor-pointer hover:bg-blue-600 max-w-min rounded-full px-2 py-2 ">
+                    <AiOutlineArrowLeft className="text-white w-10 h-10 mr-2" />
+                    <span className="text-white whitespace-nowrap">Anasayfaya Dön</span>
                 </div>
+            </Link>
+
+            <h1 className="text-white text-2xl text-center">Mevcut Oyun Odaları</h1>
+            <div className="flex justify-center mx-20 my-20 ">
+                {data ? data?.map(({ id, label, user_total, participation_fee }: GameRoomCardProps) => (
+                    <GameRoomCard
+                        key={id}
+                        id={id}
+                        label={label}
+                        user_total={user_total}
+                        participation_fee={participation_fee}
+                    />
+                )) : <span className="text-whıte text-2xl">Yükleniyor...</span>}
             </div>
         </div>
     )

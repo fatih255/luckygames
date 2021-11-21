@@ -4,10 +4,29 @@ import dotenv from 'dotenv'
 
 
 type authToken = {
-    userId: string
+    id: number
+    role: string
     email: string
     iat: number
     exp: number
+}
+
+
+function requireAdmin(req: Request, res: Response, next: NextFunction) {
+
+    if (req.signedCookies.token) {
+        const token = req.signedCookies.token?.split(' ')[1] || ''
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string) as authToken;
+
+        if (decodedToken.role !== 'admin') {
+            return res
+                .status(401)
+                .json({
+                    message: 'You Are Not Admin'
+                })
+        }
+    }
+    return next();
 }
 function ensureLoggedIn(req: Request, res: Response, next: NextFunction) {
     //console.log(req.signedCookies)
@@ -18,6 +37,9 @@ function ensureLoggedIn(req: Request, res: Response, next: NextFunction) {
         const token = req.signedCookies.token?.split(' ')[1] || ''
 
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string) as authToken;
+
+
+
         //not expired token time
         if (decodedToken.exp * 1000 > new Date().getTime()) {
             return next()
@@ -36,4 +58,6 @@ function ensureLoggedIn(req: Request, res: Response, next: NextFunction) {
             })
     }
 }
-export { ensureLoggedIn }
+
+
+export { ensureLoggedIn, requireAdmin }

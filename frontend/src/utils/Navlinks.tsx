@@ -1,4 +1,4 @@
-
+import React, { MouseEventHandler } from 'react'
 import Link from 'next/link'
 
 interface linksProps {
@@ -7,15 +7,21 @@ interface linksProps {
     links: link[]
 }
 
+
+/**
+ * Expected server HTML to contain a matching <svg> in <li>. err on console
+ * bakiyenin bg si gelmiyor 
+ */
 interface link {
     name: string,
     path?: string,
     show: 'guest' | 'user'
     extraclass?: string
     icon?: JSX.Element
+    onClick?: MouseEventHandler<HTMLLIElement> | undefined
 }
 
-import React from 'react'
+
 
 export default function Navlinks({ links, client }: linksProps) {
 
@@ -23,9 +29,9 @@ export default function Navlinks({ links, client }: linksProps) {
         <>
             {
                 links.filter(navlink => navlink.show === client)
-                    .map((navlink, index) => (<li key={index} className={`${navlink.extraclass ? navlink.extraclass : ''} items-center nava mr-4 cursor-pointer hover:underline transition hover:scale-105 nava text-white flex`} >
+                    .map((navlink, index) => (<li onClick={navlink.onClick} key={index} className={`${navlink.extraclass ? navlink.extraclass : ''} items-center nava mr-4 cursor-pointer hover:underline transition hover:scale-105 nava text-white flex`} >
                         {navlink.icon && navlink.icon}
-                        {!navlink.path ? navlink.name : <Link key={index} href={navlink.path || ''} >{navlink.name}</Link>}
+                        {!navlink.path || typeof navlink.path === "undefined" && !navlink.onClick ? navlink.name : <Link key={index} href={navlink.path || ''} >{navlink.name}</Link>}
                     </li>
                     ))
             }

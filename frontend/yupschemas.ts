@@ -24,4 +24,20 @@ const PhoneSchema = yup.object({
         .required('Lütfen şifrenizi girin'),
 }).required();
 
-export { Emailschema, PhoneSchema }
+const GameRoomSchema = yup.object({
+    user_total: yup
+        .number().typeError('Numara Girişi Olmalıdır')
+        .min(10, 'Toplam Kişi Sayısı En Az 10 kişiden Oluşmalıdır')
+        .max(500, 'Toplam Kişi Sayısı En Fazla 500 kişiden Oluşabilir')
+        .required('Toplam Kişi Sayısı Zorunludur'),
+    participation_fee: yup
+        .number().typeError('Numara Girişi Olmalıdır')
+        .min(10, 'Katılım Ücreti Minimum 10 Olmalıdır')
+        .max(500, 'Katılım Ücreti En Fazla 500 Olabilir')
+        .required('Katılım Ücreti Zorunludur'),
+    label: yup
+        .string().typeError('Sadece Karakterlerden Oluşmalıdır')
+        .required('Oyun Başlığı Zorunludur')
+});
+
+export { Emailschema, PhoneSchema, GameRoomSchema }

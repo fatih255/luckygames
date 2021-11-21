@@ -75,7 +75,7 @@ router.post('/signin', (req, res) => {
     let valid = validUser(req.body) // { signupType : email | phone , validate }
     if (valid.signupType === 'email') {
         getOneByEmail(req.body.email)
-            .then((user: { id: number, email: string | null, password: string, phone: string | null, balance: number | 0 }) => {
+            .then((user: { id: number, email: string | null, password: string, phone: string | null, balance: number | 0, role: string }) => {
                 if (user) {
                     bcrypt
                         .compare(req.body.password, user.password)
@@ -83,7 +83,7 @@ router.post('/signin', (req, res) => {
                             //if the passwords matched
                             if (result) {
                                 //generate token with user info
-                                const token = generateAccessToken({ id: user.id, email: user.email, phone: user.phone, balance: user.balance });
+                                const token = generateAccessToken({ id: user.id, email: user.email, phone: user.phone, balance: user.balance, role: user.role });
                                 //setting the 'set-cookie'
                                 const isSecure = req.app.get('env') != 'development';
 
@@ -99,7 +99,8 @@ router.post('/signin', (req, res) => {
                                             id: user.id,
                                             email: user.email,
                                             phone: user.phone,
-                                            balance: user.balance
+                                            balance: user.balance,
+                                            role: user.role
                                         },
                                         message: 'Giriş Yapıldı'
                                     });
@@ -117,14 +118,14 @@ router.post('/signin', (req, res) => {
     }
     if (valid.signupType === 'phone') {
         getOneByPhone(req.body.phone)
-            .then((user: { id: number, email: string | null, password: string, phone: string | null, balance: number | 0 }) => {
+            .then((user: { id: number, email: string | null, password: string, phone: string | null, balance: number | 0, role: string }) => {
                 if (user) {
                     bcrypt
                         .compare(req.body.password, user.password)
                         .then(function (result) {
                             //if the passwords matched
                             if (result) {
-                                const token = generateAccessToken({ id: user.id, email: user.email, phone: user.phone, balance: user.balance });
+                                const token = generateAccessToken({ id: user.id, email: user.email, phone: user.phone, balance: user.balance, role: user.role });
                                 const isSecure = req.app.get('env') != 'development';
                                 res
                                     .cookie('token', process.env.JWT_TOKEN_HEAD + ' ' + token, {
@@ -138,7 +139,8 @@ router.post('/signin', (req, res) => {
                                             id: user.id,
                                             email: user.email,
                                             phone: user.phone,
-                                            balance: user.balance
+                                            balance: user.balance,
+                                            role: user.role
                                         },
                                         message: 'Giriş Yapıldı'
                                     });
@@ -172,9 +174,15 @@ router.post('/check', (req, res) => {
         }
 
     }
+})
 
 
 
+router.post('/logout', (req, res) => {
+    return res
+        .clearCookie('token')
+        .clearCookie('UserLoggedIn')
+        .status(200).send('User Have')
 })
 
 

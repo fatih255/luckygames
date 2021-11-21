@@ -1,4 +1,6 @@
+
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 
 interface userState {
     loading: 'idle' | 'pending' | 'succeeded' | 'failed'
@@ -8,7 +10,8 @@ interface userState {
         id: number | null,
         email: string | null,
         phone: string | null,
-        balance: number | null
+        balance: number | null,
+        role: string | null
     }
 }
 
@@ -17,9 +20,8 @@ const initialState: userState = {
     loading: 'idle',
     checkloading: 'idle',
     error: undefined,
-    user: { id: null, email: null, phone: null, balance: null },
+    user: { id: null, email: null, phone: null, balance: null, role: null },
 }
-
 
 //async state update 
 export const signUp = createAsyncThunk(
@@ -82,6 +84,28 @@ export const Check = createAsyncThunk(
 )
 
 
+//logout User
+export const Logout = createAsyncThunk(
+    'auth/Logout',
+    async () => {
+        return fetch(`${process.env.SERVER_BASE_URL}/api/auth/logout`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+        }).then(async (response) => {
+            if (response.ok) {
+                return true
+            } else {
+                const text = await response.text()
+                throw new Error(text)
+            }
+        })
+
+    }
+)
+
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -127,17 +151,25 @@ export const authSlice = createSlice({
             }),
             builder.addCase(Check.rejected, (state, action) => {
                 state.checkloading = 'failed'
-                state.user = { id: null, email: null, phone: null, balance: null }
+                state.user = { id: null, email: null, phone: null, balance: null, role: null }
+            }),
+            //Logout Thunk
+            builder.addCase(Logout.pending, (state, action) => {
+                state.loading = 'pending'
+            }),
+            builder.addCase(Logout.fulfilled, (state, action) => {
+                state.loading = initialState.loading
+                state.checkloading = initialState.checkloading
+                state.error = initialState.error
+                state.user = initialState.user
+
+            }),
+            builder.addCase(Logout.rejected, (state, action) => {
+                state.loading = 'failed'
             })
     }
 })
 
 
-/*
-export const {
-    haveUser
-} = authSlice.actions
-
- */
 
 export default authSlice.reducer

@@ -1,6 +1,6 @@
 import type { NextPage, NextPageContext } from 'next'
 import Head from 'next/head'
-import HomeSlider from '../src/components/HomeSlider'
+import HomeSlider from '../src/components/userComponents/HomeSlider'
 import Image from 'next/image'
 
 const Home: NextPage = () => {

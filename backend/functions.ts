@@ -4,7 +4,9 @@ interface validUserInterface {
     id: number,
     email: string,
     phone: string,
-    password: string
+    password: string,
+    balance: number,
+    role: string
 }
 
 function validUser(user: validUserInterface) {
@@ -46,6 +48,7 @@ function validateToken(userToken: string | null, getinfo: boolean = false): bool
                             email: decoded?.email,
                             phone: decoded?.phone,
                             balance: decoded?.balance,
+                            role: decoded?.role
                         }
                     } else {
                         tokenvalidate = true

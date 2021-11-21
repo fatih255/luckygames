@@ -1,8 +1,8 @@
 import React from 'react';
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
-
+import { Doughnut } from 'react-chartjs-2';
 import { useAppSelector } from '../../redux/hooks'
 import { AiOutlineMail, AiOutlinePhone } from 'react-icons/ai';
+import BalanceChartPie from '../../src/components/userComponents/BalanceChartPie';
 
 interface User {
     id: string
@@ -18,7 +18,7 @@ export default function profile(props: User) {
 
     // console.log(props)
     return (
-        <div className="flex gap-x-10">
+        <div className="grid grid-cols-3 grid-flow-col w-full gap-x-6">
             <div>
                 <h1 className="font-bold text-2xl mb-4">Profilim</h1>
                 <div className="flex items-center"><AiOutlinePhone className="text-blue-700 w-8 h-8 mr-4" /><span className={`${!phone && 'text-gray-400'}`} >{phone || 'Kayıtlı Telefon Yok'}</span></div>
@@ -36,6 +36,9 @@ export default function profile(props: User) {
 
                     </div>
                 </div>
+            </div>
+            <div>
+                <BalanceChartPie />
             </div>
         </div>
     )

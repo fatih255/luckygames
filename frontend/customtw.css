@@ -7,13 +7,22 @@
 
 @layer components {
 
+
+  img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    }
+    
   .appdiv{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     min-height: 100vh;
   }
-  .appdiv main{
+  .detailpage{
     display: flex;
     flex:1;
     @apply mx-20;

@@ -3,18 +3,22 @@ import jwt_decode from 'jwt-decode';
 
 interface tokeninterface {
     id: number,
+    role: 'admin' | 'user'
     email: string,
     iat: number,
     exp: number
     // whatever else is in the JWT.
 }
-function validateToken(userToken: string | null, forNextMiddleware: boolean = true, split: string = '%20') {
+function validateToken(userToken: string | null, forNextMiddleware: boolean = true, split: string = '%20', requireAdmin: boolean = false) {
 
     let tokenvalidate = false;
     if (userToken) {
         const token = userToken?.split(split)[1] || ''
         const decoded: tokeninterface = jwt_decode(token);
 
+        if (requireAdmin && decoded.role !== 'admin') {
+            return NextResponse.redirect(`/profile/${decoded.id}`)
+        }
         //not expired token time
         tokenvalidate = decoded.exp * 1000 > new Date().getTime()
     }
@@ -45,7 +49,7 @@ function cookieparser(cookieString: string) {
     // [[key1,value1], [key2,value2], ...]
     let splittedPairs = pairs?.map((cookie: string) => cookie.split("="));
 
-        //token1=41561651; token2=65465165156
+    //token1=41561651; token2=65465165156
     // Create an object with all key-value pairs
     const cookieObj = splittedPairs?.reduce(function (obj: any, cookie: any) {
 

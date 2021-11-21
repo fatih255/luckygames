@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        slideinright: "sliderinight .7s cubic-bezier(0.25, 0.46, 0.45, 0.94) , bounce 4s .7s ease-in-out infinite",
+        slideinright: "sliderinright .7s cubic-bezier(0.25, 0.46, 0.45, 0.94) , bounce 4s .7s ease-in-out infinite",
         bounce: 'bounce 4s ease-in-out infinite',
         reversebounce: 'reversebounce 4s 4.7s ease-in infinite',
         shakelefthand: 'shakelefthand 1s ease-in 3 forwards',
@@ -13,7 +13,7 @@ module.exports = {
       },
       keyframes: {
 
-        sliderinight: {
+        sliderinright: {
           '0%': {
             opacity: 0,
             transform: 'translateX(1000px)'
