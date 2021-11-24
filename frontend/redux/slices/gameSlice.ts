@@ -1,16 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import type { RootState } from '../store'
 
 // Define a type for the slice state
 interface GameState {
-  answer: number | string
+  isJoining: boolean
+  inRoom: boolean
+  answer: 'rock' | 'paper' | 'scissors' | null
   gamestart: Boolean
   timeover: Boolean
 }
 
 // Define the initial state using that type
 const initialState: GameState = {
-  answer: 0,
+  isJoining: false,
+  inRoom: false,
+  answer: null,
   gamestart: false,
   timeover: false,
 }
@@ -20,8 +23,14 @@ export const gameSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    isJoining: (state, action: PayloadAction<boolean>) => {
+      state.isJoining = action.payload
+    },
+    inRoom: (state, action: PayloadAction<boolean>) => {
+      state.inRoom = action.payload
+    },
     // Use the PayloadAction type to declare the contents of `action.payload`
-    changeAnswer: (state, action: PayloadAction<number | string>) => {
+    changeAnswer: (state, action: PayloadAction<'rock' | 'paper' | 'scissors' | null>) => {
       state.answer = action.payload
     },
     GameStart: (state) => {
@@ -40,6 +49,8 @@ export const gameSlice = createSlice({
 })
 
 export const {
+  isJoining,
+  inRoom,
   changeAnswer,
   GameStart,
   GameStop,

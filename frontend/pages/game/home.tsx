@@ -5,11 +5,13 @@ import GameLayout from '../../layouts/GameLayout'
 import { AiOutlineArrowLeft } from 'react-icons/ai'
 import GameRoomCard, { GameRoomCardProps } from '../../src/components/userComponents/GameRoomCard'
 import useSWR from 'swr'
+import { useAppSelector } from '../../redux/hooks'
 
 
 export default function home() {
 
     const fetcher = (url: RequestInfo) => fetch(url, { credentials: 'include' }).then((res) => res.json())
+    const user = useAppSelector(state => state.auth.user)
     const { data, mutate } = useSWR(`${process.env.SERVER_BASE_URL}/api/user/get-all-active-game-rooms`, fetcher)
 
 
@@ -31,9 +33,8 @@ export default function home() {
                         id={id}
                         label={label}
                         user_total={user_total}
-                        participation_fee={participation_fee}
-                    />
-                )) : <span className="text-whıte text-2xl">Yükleniyor...</span>}
+                        participation_fee={participation_fee} user={user} />
+                )) : <span className="text-white text-2xl">Yükleniyor...</span>}
             </div>
         </div>
     )

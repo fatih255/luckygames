@@ -5,11 +5,15 @@
         "rootDir": "./",
         "outDir": "./build",
         "esModuleInterop": true,
-        "strict": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "noImplicitAny": false,
         "moduleResolution": "node",
     },
     "include": [
-        "./routes/*",
+        "./src/**/*.ts",
+        "./src/**/**/*.ts",
+        "./src/*.ts",
     ],
     "types": [
         "node"

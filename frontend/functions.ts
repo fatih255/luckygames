@@ -10,7 +10,7 @@ interface tokeninterface {
     // whatever else is in the JWT.
 }
 function validateToken(userToken: string | null, forNextMiddleware: boolean = true, split: string = '%20', requireAdmin: boolean = false) {
-
+   
     let tokenvalidate = false;
     if (userToken) {
         const token = userToken?.split(split)[1] || ''
@@ -21,8 +21,9 @@ function validateToken(userToken: string | null, forNextMiddleware: boolean = tr
         }
         //not expired token time
         tokenvalidate = decoded.exp * 1000 > new Date().getTime()
-    }
-
+        //console.log(decoded)
+    } 
+ 
     if (forNextMiddleware) {
         return tokenvalidate ? NextResponse.next() : NextResponse.redirect('/login')
     } else {

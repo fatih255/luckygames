@@ -5,7 +5,7 @@ import DefaultLayout from "./DefaultLayout";
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { useEffect } from 'react'
 import { Check } from '../redux/slices/authSlice';
-import Cookies from 'js-cookie';
+
 
 interface WithRouterProps {
   router: NextRouter
@@ -20,7 +20,7 @@ export default function LayoutWrapper(props: WithRouterProps) {
 
   const { id } = useAppSelector(state => state.auth.user)
   useEffect(() => {
-    !Cookies.get('UserLoggedIn') || id == null && dispatch(Check())
+     id === null && dispatch(Check())
   }, [])
 
   const Layout = props.children.type.layout;

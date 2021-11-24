@@ -17,7 +17,7 @@ interface Nav {
 export default function Navbar({ disableFixed = true }: Nav) {
 
 
-    const client = Cookies.get('UserLoggedIn') ? 'user' : 'guest'
+
     const router = useRouter()
     const { user } = useAppSelector(state => state.auth) //from redux
     const dispatch = useAppDispatch()
@@ -26,7 +26,7 @@ export default function Navbar({ disableFixed = true }: Nav) {
             <div className="mx-20  flex h-14 justify-between items-center ">
                 <span className="font-bold text-3xl text-white"><Link href="/">LuckyGames</Link></span>
                 <ul className="flex self-stretch">
-                    {<Navlinks client={client} links={[
+                    {<Navlinks client={user.id ? 'user' : 'guest'} links={[
                         {
                             name: "Kaydol",
                             path: '/signup',

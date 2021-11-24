@@ -5,7 +5,6 @@ import { Provider } from 'react-redux';
 import '../customtw.css';
 import LayoutWrapper from '../layouts/LayoutWrapper';
 import { store } from '../redux/store';
-import { validateToken } from '../functions';
 
 
 type NextPageWithLayout = NextPage & {
@@ -17,7 +16,6 @@ type AppPropsWithLayout = AppProps & {
 }
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-
 
   return <Provider store={store}>
     <LayoutWrapper {...pageProps}>

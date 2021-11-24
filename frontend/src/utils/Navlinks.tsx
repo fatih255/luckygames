@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 interface linksProps {
     userid?: number | null | undefined
-    client: 'guest' | 'user',
+    client: 'guest' | 'user'
     links: link[]
 }
 
@@ -29,10 +29,11 @@ export default function Navlinks({ links, client }: linksProps) {
         <>
             {
                 links.filter(navlink => navlink.show === client)
-                    .map((navlink, index) => (<li onClick={navlink.onClick} key={index} className={`${navlink.extraclass ? navlink.extraclass : ''} items-center nava mr-4 cursor-pointer hover:underline transition hover:scale-105 nava text-white flex`} >
-                        {navlink.icon && navlink.icon}
-                        {!navlink.path || typeof navlink.path === "undefined" && !navlink.onClick ? navlink.name : <Link key={index} href={navlink.path || ''} >{navlink.name}</Link>}
-                    </li>
+                    .map((navlink, index) => (
+                        <li onClick={navlink.onClick} key={index} className={`${navlink.extraclass ? navlink.extraclass : ''} items-center nava mr-4 cursor-pointer hover:underline transition hover:scale-105 nava text-white flex`} >
+                            {navlink.icon ? navlink.icon : ''}
+                            {!navlink.path || typeof navlink.path === "undefined" && !navlink.onClick ? navlink.name : <Link key={index} href={navlink.path || ''} >{navlink.name}</Link>}
+                        </li>
                     ))
             }
         </>)

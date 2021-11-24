@@ -6,7 +6,7 @@
   "main": "index.js",
   "typings": "routes/user.d.ts",
   "scripts": {
-    "start": "nodemon index.ts",
+    "start": "nodemon ",
     "build": "tsc --project ./"
   },
   "keywords": [],
@@ -21,7 +21,10 @@
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.95.14",
     "morgan": "^1.10.0",
-    "pg": "^8.7.1"
+    "pg": "^8.7.1",
+    "reflect-metadata": "^0.1.13",
+    "socket-controllers": "0.0.5",
+    "socket.io": "^4.4.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
