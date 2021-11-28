@@ -7,23 +7,51 @@ import Userdot from '../../src/components/userComponents/Userdot'
 import GameLayout from '../../layouts/GameLayout'
 import GameArea from '../../src/components/userComponents/GameArea'
 import GameNavItem from '../../src/components/userComponents/GameNavItem'
-import { useAppSelector } from '../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import useSWR from 'swr'
-import { GameRoomCardProps } from '../../src/components/userComponents/GameRoomCard'
 import { useRouter } from 'next/router'
+import socketService from '../../services/socketService'
+import gameService from '../../services/gameService'
+import roomService from '../../services/roomService'
+import { changeJoinedUserTotal } from '../../redux/slices/gameSlice'
 
 export default function room() { /*roomInfo: GameRoomCardProps */
 
     const router = useRouter()
-    const { roomId } = router.query
+    const query = router.query
+    const roomId = parseInt(query.roomId as string)
     const user = useAppSelector(state => state.auth.user)
-
 
     const fetcher = (url: RequestInfo) => fetch(url, { credentials: 'include' }).then((res) => res.json())
     //const { mutate } = useSWRConfig()
     const { data, mutate } = useSWR(`${process.env.SERVER_BASE_URL}/api/user/getgameinfo/${roomId}`, fetcher)
 
+    const game = useAppSelector(state => state.game)
+    const dispatch = useAppDispatch()
 
+    const getUsersInRoom = async () => {
+        const socket = socketService.socket;
+        if (!roomId || !socket) return;
+        const size = await roomService.getJoinedUsersSize(socket, roomId).catch(err => err)
+        if (size) {
+            dispatch(changeJoinedUserTotal(size))
+        }
+
+    }
+    const handleRoomValuesUpdate = () => {
+        if (socketService.socket)
+            roomService.onRoomUpdate(socketService.socket, (roomvalues) => {
+                roomId === roomvalues.id && dispatch(changeJoinedUserTotal(roomvalues.onlineUsers))
+
+            });
+    };
+
+    useEffect(() => {
+        if (roomId) {
+            getUsersInRoom()
+            handleRoomValuesUpdate()
+        }
+    }, [roomId])
     return (
         <div className="md:flex lg:grid  grid-cols-4 grid-rows-4 gap-5 px-[5%] py-[5%]  h-screen ">
             <div className=" col-span-4 lg:col-span-1 bg-white px-4 py-4 rounded-xl justify-start items-center ">
@@ -32,7 +60,7 @@ export default function room() { /*roomInfo: GameRoomCardProps */
                         1.TUR
                     </div>
                     <span className="text-blue-700 text-2xl  flex font-bold " >
-                        <FaUsers className="text-blue-700 w-8 h-8 " />0/{!data ? '-' : data.user_total}
+                        <FaUsers className="text-blue-700 w-8 h-8 " />{game.joinedUsersTotal}/{!data ? '-' : data.user_total}
                     </span>
                     <div className="bg-blue-300 w-full h-12 relative mt-4 rounded-full flex  justify-left items-center">
                         <div className="bg-blue-600 w-[30%] h-full absolute rounded-full ">

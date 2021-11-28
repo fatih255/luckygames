@@ -9,7 +9,6 @@ export default function GameArea({ id, label, user_total, participation_fee, use
 
     return (
         <div className="flex justify-around h-full flex-col px-8 py-4">
-            <button onClick={() => console.log('socket event')}>socket io</button>
             <div className="flex justify-around gap-x-10">
                 <Hand choice="Paper" position="left" />
                 <Hand choice="Paper" position="right" />

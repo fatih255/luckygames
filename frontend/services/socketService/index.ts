@@ -2,7 +2,7 @@ import { io, Socket } from "socket.io-client";
 
 class SocketService {
 
-    
+
     public socket: Socket | null = null;
     public connect(url: string): Promise<Socket> {
         return new Promise((rs, rj) => {
@@ -14,6 +14,7 @@ class SocketService {
             this.socket.on('connect', () => {
                 rs(this.socket as Socket);
             });
+            
 
             this.socket.on('connect_error', (err) => {
                 console.log("Coinection error: ", err)
@@ -21,6 +22,7 @@ class SocketService {
             })
         })
     }
+   
 }
 
 export default new SocketService();

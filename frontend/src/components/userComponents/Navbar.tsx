@@ -11,7 +11,7 @@ import { Logout } from '../../../redux/slices/authSlice'
 import { useRouter } from 'next/router'
 import { FaGamepad } from 'react-icons/fa'
 interface Nav {
-    disableFixed: boolean
+    disableFixed?: boolean
 }
 
 export default function Navbar({ disableFixed = true }: Nav) {
@@ -45,13 +45,13 @@ export default function Navbar({ disableFixed = true }: Nav) {
                         },
                         {
                             name: 'Profilim',
-                            path: `/profile/${user.id}`,
+                            path: `/profile`,
                             show: 'user',
                             icon: <AiOutlineUser className="text-white w-6 h-6 mr-3" />
                         },
                         {
                             name: 'Oyun Parası Yükle',
-                            path: `/profile/${user.id}/buygamecoin`,
+                            path: `/profile/buygamecoin`,
                             show: 'user',
                             icon: <MdPayment className="text-white w-6 h-6 mr-3" />
                         },

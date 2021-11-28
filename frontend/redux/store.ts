@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import GameReducer from './slices/gameSlice'
 import AuthReducer from './slices/authSlice'
 import AdminReducer from './slices/adminSlice'
+import UserActionsReducer from './slices/userActionsSlice'
 // ...
 
 
@@ -10,7 +11,8 @@ export const store = configureStore({
   reducer: {
     game: GameReducer,
     auth: AuthReducer,
-    admin: AdminReducer
+    admin: AdminReducer,
+    userActions: UserActionsReducer,
 
   }
 })

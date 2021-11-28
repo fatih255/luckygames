@@ -3,6 +3,7 @@ import express from 'express';
 import UserRoute from './routes/user';
 import AuthRoute from './routes/auth'
 import AdminRoute from './routes/admin';
+import RoomRoute from './routes/room';
 import dotenv from 'dotenv';
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -27,7 +28,8 @@ app.use(cors({
 app.get('/', (req, res) => res.send('Express + TypeScript Server'));
 app.use('/api/auth', AuthRoute);
 app.use('/api/user', ensureLoggedIn, UserRoute);
-app.use('/api/admin/', ensureLoggedIn, requireAdmin, AdminRoute)
+app.use('/api/room', ensureLoggedIn, RoomRoute);
+app.use('/api/admin', ensureLoggedIn, requireAdmin, AdminRoute)
 
 app.listen(process.env.SERVER_PORT, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${process.env.SERVER_PORT}`);

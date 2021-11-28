@@ -1,7 +1,7 @@
 
 import express from 'express'
 import dotenv from 'dotenv'
-import { getOne } from '../db/User';
+import { getOne, updateUser } from '../db/User';
 import { getAllGameRooms, getOneById } from '../db/Game';
 
 dotenv.config();
@@ -49,6 +49,24 @@ router.get('/getgameinfo/:id', (req, res) => {
             res.status(404).send(err)
         })
 })
+
+router.post('/addgamecoin', (req, res) => {
+    const { userid, amount } = req.body
+    getOne(Number(userid))
+        .then(async ({ balance }) => {
+            //Payment Process Papara or iyzico or paytr -
+            if (await updateUser(userid, { balance: balance + amount })) {
+                res.status(200).json({ message: 'Oyun Parası Başarıyla Yüklendi' })
+            } else {
+                res.status(400).json({ message: 'Oyun Parası Yüklenirken Bir Sorun Oluştu' })
+            }
+        }).catch((err: any) => {
+            res.status(404).json({ message: err.message })
+        })
+
+
+})
+
 
 
 export default router

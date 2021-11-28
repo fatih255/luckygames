@@ -6,6 +6,9 @@ import { AiOutlineArrowLeft } from 'react-icons/ai'
 import GameRoomCard, { GameRoomCardProps } from '../../src/components/userComponents/GameRoomCard'
 import useSWR from 'swr'
 import { useAppSelector } from '../../redux/hooks'
+import { useRouter } from 'next/router'
+
+
 
 
 export default function home() {
@@ -15,6 +18,14 @@ export default function home() {
     const { data, mutate } = useSWR(`${process.env.SERVER_BASE_URL}/api/user/get-all-active-game-rooms`, fetcher)
 
 
+    const router = useRouter();
+    const game = useAppSelector(state => state.game)
+    if (game.roomId) {
+        router.push({
+            pathname: '/game/[roomId]',
+            query: { roomId: game.roomId },
+        })
+    }
     return (
         <div className=" h-screen bg-blue-800 py-10 px-5">
 

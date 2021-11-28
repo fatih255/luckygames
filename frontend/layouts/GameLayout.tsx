@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter, NextRouter } from 'next/router'
 import socketService from '../services/socketService'
+import Navbar from '../src/components/userComponents/Navbar'
 
 interface WithRouterProps {
     router: NextRouter
@@ -26,7 +27,10 @@ class gameLayout extends Component<gameLayoutProps> {
 
     render() {
         return (
-            <main className="bg-blue-700 ">{this.props.children} </main>
+            <div>
+                <Navbar />
+                <main className="bg-blue-700 ">{this.props.children} </main>
+            </div>
 
         )
     }

@@ -27,7 +27,7 @@ const PhoneSchema = yup.object({
 const GameRoomSchema = yup.object({
     user_total: yup
         .number().typeError('Numara Girişi Olmalıdır')
-        .min(10, 'Toplam Kişi Sayısı En Az 10 kişiden Oluşmalıdır')
+        .min(2, 'Toplam Kişi Sayısı En Az 2 kişiden Oluşmalıdır')
         .max(500, 'Toplam Kişi Sayısı En Fazla 500 kişiden Oluşabilir')
         .required('Toplam Kişi Sayısı Zorunludur'),
     participation_fee: yup
