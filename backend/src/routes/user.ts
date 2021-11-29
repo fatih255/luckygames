@@ -55,10 +55,10 @@ router.post('/addgamecoin', (req, res) => {
     getOne(Number(userid))
         .then(async ({ balance }) => {
             //Payment Process Papara or iyzico or paytr -
-            if (await updateUser(userid, { balance: balance + amount })) {
-                res.status(200).json({ message: 'Oyun Parası Başarıyla Yüklendi' })
+            if (await updateUser(userid, { balance: balance + Number(amount) })) {
+                res.status(200).json({ message: 'Oyun Parası Başarıyla Yüklendi', currentBalance: balance + Number(amount) })
             } else {
-                res.status(400).json({ message: 'Oyun Parası Yüklenirken Bir Sorun Oluştu' })
+                res.status(400).json({ message: 'Oyun Parası Yüklenirken Bir Sorun Oluştu', currentBalance: balance })
             }
         }).catch((err: any) => {
             res.status(404).json({ message: err.message })

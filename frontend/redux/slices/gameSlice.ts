@@ -10,7 +10,7 @@ interface GameState {
   timeover: Boolean
   joinAttempt: {
     loading: 'idle' | 'pending' | 'succeeded' | 'failed',
-    response: { roomid: number | null, message: string | null }
+    response: { roomid: number | null, message: string | null, AvailableBalance: number | null }
   }
 }
 
@@ -18,7 +18,7 @@ interface GameState {
 const initialState: GameState = {
   joinedUsersTotal: 0,
   isJoining: false,
-  joinAttempt: { loading: 'idle', response: { roomid: null, message: null } },
+  joinAttempt: { loading: 'idle', response: { roomid: null, message: null, AvailableBalance: null } },
   roomId: null,
   answer: null,
   gamestart: false,
@@ -92,7 +92,7 @@ export const gameSlice = createSlice({
     }),
       builder.addCase(joinAttempt.fulfilled, (state, action) => {
         state.joinAttempt.loading = 'succeeded'
-        state.joinAttempt.response=action.payload
+        state.joinAttempt.response = action.payload
       }),
       builder.addCase(joinAttempt.rejected, (state, action) => {
         state.joinAttempt.loading = 'failed'

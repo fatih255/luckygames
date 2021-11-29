@@ -5,6 +5,7 @@ import { FaCoins } from 'react-icons/fa';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import PaymentAmountCard from '../../src/components/userComponents/PaymentAmountCard';
 import { AddGameCoinAction } from '../../redux/slices/userActionsSlice';
+import { Check } from '../../redux/slices/authSlice';
 
 
 interface User {
@@ -37,6 +38,10 @@ export default function buygamecoin(props: User) {
     })
     const onSubmit: SubmitHandler<FormInputs> = data => {
         dispatch(AddGameCoinAction({ userid: id, amount: data.amount }))
+            .then(() => {
+                dispatch(Check())
+            })
+            .catch((err) => { alert(err) })
     };
 
     return (

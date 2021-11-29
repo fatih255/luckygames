@@ -20,6 +20,8 @@ export default function Navbar({ disableFixed = true }: Nav) {
 
     const router = useRouter()
     const { user } = useAppSelector(state => state.auth) //from redux
+
+
     const dispatch = useAppDispatch()
     return (
         <nav className={`bg-black  w-full z-30 ${disableFixed ? '' : 'fixed'}`}>

@@ -1,4 +1,5 @@
 import jwt, { JwtPayload } from 'jsonwebtoken'
+import { getOne } from './db/User';
 
 interface validUserInterface {
     id: number,
@@ -32,35 +33,39 @@ function generateAccessToken(infos: object) {
 
 
 
-function validateToken(userToken: string | null, getinfo: boolean = false): boolean | object {
+async function validateToken(userToken: string | null, getinfo: boolean = false): Promise<boolean | object> {
 
     let tokenvalidate: object | boolean = false;
     if (userToken) {
         const token = userToken?.split(' ')[1] || ''
 
-        // invalid token
-        jwt.verify(token, process.env.JWT_SECRET as string, function (err, decoded) {
-            if (!err) {
-                if (decoded?.exp as number * 1000 > new Date().getTime()) {
-                    if (getinfo) {
-                        tokenvalidate = {
-                            id: decoded?.id,
-                            email: decoded?.email,
-                            phone: decoded?.phone,
-                            balance: decoded?.balance,
-                            role: decoded?.role
+        return new Promise((rs, rj) => {
+            // invalid token
+            jwt.verify(token, process.env.JWT_SECRET as string, function (err, decoded) {
+                if (!err) {
+                    if (decoded?.exp as number * 1000 > new Date().getTime()) {
+                        if (getinfo) {
+                            getOne(Number(decoded?.id))
+                                .then(async (user: object) => {
+                                    rs({ ...user })
+                                }).catch((err: any) => {
+                                    rj(false)
+                                })
+
+                        } else {
+                            tokenvalidate = true
+                            rs(true)
                         }
                     } else {
-                        tokenvalidate = true
+                        rj(false)
                     }
+                } else {
+                    rj(false)
                 }
-            } else {
-                tokenvalidate = false
-            }
-        });
+            });
+        })
 
     }
-
     return tokenvalidate
 
 }

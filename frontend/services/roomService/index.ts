@@ -23,6 +23,14 @@ class RoomService {
             socket.on(`get_room_${roomId}_users_size`, (size) => rs(size))
         });
     }
+    public async checkUserInRoom(
+        socket: Socket,
+        roomId: number): Promise<boolean> {
+        return new Promise((rs, rj) => {
+            socket.emit("check_user_in_room", { roomId });
+            socket.on("on_check_user_in_room", (size) => rs(size))
+        })
+    }
 
 }
 

@@ -157,8 +157,8 @@ router.post('/signin', (req, res) => {
 });
 
 
-router.post('/check', (req, res) => {
-    const userLoggedIn = validateToken(req.signedCookies.token, true);
+router.post('/check', async (req, res) => {
+    const userLoggedIn = await validateToken(req.signedCookies.token, true);
     if (typeof userLoggedIn === 'object') {
         return res
             .status(200).json(userLoggedIn)
@@ -166,7 +166,7 @@ router.post('/check', (req, res) => {
         if (userLoggedIn) {
             return res.status(200).send('User Have')
         } else {
-            return res.status(401).clearCookie("UserLoggedIn").clearCookie("token").send('Havent User')
+            return res.status(401).clearCookie("token").send('Havent User')
         }
 
     }

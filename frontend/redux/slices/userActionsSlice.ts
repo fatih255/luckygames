@@ -4,6 +4,7 @@ interface initialState {
     AddGameCoin: {
         loading: 'idle' | 'pending' | 'succeeded' | 'failed',
         response: {
+            currentBalance: number|null,
             message: string | null
         }
     },
@@ -13,6 +14,7 @@ const initialState: initialState = {
     AddGameCoin: {
         loading: 'idle',
         response: {
+            currentBalance:null,
             message: null
         }
     },

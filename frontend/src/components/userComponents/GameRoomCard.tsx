@@ -7,7 +7,7 @@ import { inRoom, isJoining, joinAttempt } from '../../../redux/slices/gameSlice'
 import socketService from '../../../services/socketService'
 import gameService from '../../../services/gameService';
 import roomService from '../../../services/roomService';
-import useSWR from 'swr';
+import { Check } from '../../../redux/slices/authSlice';
 
 export interface GameRoomCardProps {
     id: number
@@ -31,15 +31,20 @@ export default function GameRoomCard({ id, label, user_total, participation_fee 
     //prive states component
     const [OnlineUsersSize, setOnlineUsersSize] = useState(0)
 
-    if (game.joinAttempt.loading === 'failed') {
-        alert(game.joinAttempt.response.message)
-    }
 
     //room join method
     const joinRoom = async () => {
         dispatch(isJoining(true))
-        dispatch(joinAttempt({ userid: user.id, roomid: id }))
-        if (game.joinAttempt.response.roomid === id && game.joinAttempt.loading === 'succeeded') {
+        const JoinResponse: Promise<{ message: string, roomid: number, AvailableBalance: number }> = new Promise((rs, rj) => {
+            dispatch(joinAttempt({ userid: user.id, roomid: id })).then(({ payload: { message, roomid, AvailableBalance } }) => {
+                rs({ message, roomid, AvailableBalance })
+            }).catch((err) => {
+                rj(err.message)
+            })
+        })
+
+
+        if ((await JoinResponse).roomid === id) {
 
             const socket = socketService.socket;
             if (!id || !socket) return;
@@ -52,6 +57,13 @@ export default function GameRoomCard({ id, label, user_total, participation_fee 
                 dispatch(inRoom(id));
                 getUsersInRoom()
                 changeRoomValuesHandler(OnlineUsersSize + 1, id)
+                dispatch(Check())
+
+                router.push({
+                    pathname: '/game/[roomId]',
+                    query: { roomId: id },
+                })
+
 
             }
             dispatch(isJoining(false))
@@ -90,16 +102,27 @@ export default function GameRoomCard({ id, label, user_total, participation_fee 
 
 
 
-
+    let mounted = false;
     useEffect(() => {
-        if (id) {
+
+        if (id && !mounted) {
             getUsersInRoom()
             handleRoomValuesUpdate()
         }
+
+        return () => {
+            mounted = true
+        }
     }, [])
 
+    const test = () => {
+        if (socketService.socket) {
+            roomService.checkUserInRoom(socketService.socket, id)
+        }
+    }
     return (
         <div className="flex justify-center mx-20 my-20 ">
+            <button onClick={() => test()}>im already in room</button>
             <div className="py-4  px-4 rounded-xl centered-shadow bg-white">
                 <h2 className="text-4xl">{`No: ${id} | ${label}`}</h2>
                 <div className="mt-8 mb-8" >

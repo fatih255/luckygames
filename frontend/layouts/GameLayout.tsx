@@ -22,7 +22,7 @@ const connectSocket = async () => {
 class gameLayout extends Component<gameLayoutProps> {
 
     componentDidMount() {
-        connectSocket()
+        !socketService.socket && connectSocket()
     }
 
     render() {

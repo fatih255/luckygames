@@ -38,7 +38,7 @@ function updateUser(id: number, user: {
     const getFilledValues = Object.fromEntries(Object.entries(user).filter((val) => val !== undefined));
     const getFilledValuesKeys = Object.keys(getFilledValues)
 
-    return knex('user')
+    return knex('users')
         .where({ id: id })
         .update({
             ...getFilledValues
