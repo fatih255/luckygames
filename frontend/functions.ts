@@ -17,7 +17,7 @@ function validateToken(userToken: string | null, forNextMiddleware: boolean = tr
         const decoded: tokeninterface = jwt_decode(token);
 
         if (requireAdmin && decoded.role !== 'admin') {
-            return NextResponse.redirect(`/profile/${decoded.id}`)
+            return NextResponse.redirect(`/profile`)
         }
         //not expired token time
         tokenvalidate = decoded.exp * 1000 > new Date().getTime()

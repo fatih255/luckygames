@@ -6,6 +6,8 @@ import { AiOutlineArrowLeft } from 'react-icons/ai'
 import GameRoomCard, { GameRoomCardProps } from '../../src/components/userComponents/GameRoomCard'
 import useSWR from 'swr'
 import { useAppSelector } from '../../redux/hooks'
+import socketService from '../../services/socketService'
+import roomService from '../../services/roomService'
 
 
 export default function home() {
@@ -14,7 +16,10 @@ export default function home() {
     const user = useAppSelector(state => state.auth.user)
     const { data, mutate } = useSWR(`${process.env.SERVER_BASE_URL}/api/user/get-all-active-game-rooms`, fetcher)
 
-
+    if (socketService.socket) {
+        roomService.sendAllRoomSize(socketService.socket, data)
+        
+    }
 
     return (
         <div className=" h-screen bg-blue-800 py-10 px-5">

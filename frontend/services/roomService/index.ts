@@ -25,11 +25,23 @@ class RoomService {
     }
     public async checkUserInRoom(
         socket: Socket,
-        roomId: number): Promise<boolean> {
+        roomId: number): Promise<
+            'user_already_in_room' |
+            'user_not_in_room' |
+            'room_is_empty'> {
         return new Promise((rs, rj) => {
             socket.emit("check_user_in_room", { roomId });
-            socket.on("on_check_user_in_room", (size) => rs(size))
+            socket.on("on_check_user_in_room", (res) => rs(res))
         })
+    }
+    public async sendAllRoomSize(
+        socket: Socket,
+        rooms: [
+            { id: number | string | string, size: number }
+        ]) {
+        socket.emit("all_room_size", { rooms });
+
+
     }
 
 }

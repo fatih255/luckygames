@@ -43,7 +43,7 @@ export default function login() {
     const { error, loading, user } = useAppSelector(state => state.auth) //from redux
     const router = useRouter()
 
-    loading === 'succeeded' && (user.role === 'admin' ? router.push(`/admin`) : router.push(`/profile/${user.id} `))
+    loading === 'succeeded' && (user.role === 'admin' ? router.push(`/admin`) : router.push(`/profile`))
 
     return (
         <div className="py-20 flex flex-col justify-start items-center mx-10">

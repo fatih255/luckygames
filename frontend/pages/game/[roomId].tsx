@@ -46,8 +46,24 @@ export default function room() { /*roomInfo: GameRoomCardProps */
             });
     };
 
+    const userInRoom = async () => {
+        if (socketService.socket) {
+            const isUserInRoom = await roomService.checkUserInRoom(socketService.socket, roomId)
+          
+            if (isUserInRoom === 'user_not_in_room' || isUserInRoom === 'room_is_empty') {
+                alert('Bu Oyun Odasına Katılmadınız')
+                router.push({
+                    pathname: '/game/home'
+                })
+            }
+
+        }
+    }
+
+
     useEffect(() => {
         if (roomId) {
+            userInRoom()
             getUsersInRoom()
             handleRoomValuesUpdate()
         }

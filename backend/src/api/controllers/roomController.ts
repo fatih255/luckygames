@@ -5,6 +5,12 @@ import { Server, Socket } from 'socket.io';
 @SocketController()
 export class RoomController {
 
+    public rooms: any = null
+    @OnMessage("all_room_size")
+    public async allRoomSize(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
+        this.rooms = message.rooms
+        //console.log(this.rooms)
+    }
 
     @OnMessage("join_game")
     public async joinGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
@@ -15,9 +21,9 @@ export class RoomController {
         // checking if the socket is in the room.
         const socketRooms = Array.from(socket.rooms.values()).filter((r) => r !== socket.id)
 
-        if (socketRooms.length > 0 || connectedSockets && connectedSockets.size === 3) {
+        if (socketRooms.length > 0 || connectedSockets && connectedSockets.size === this.rooms.find((r: any) => r.id == message.roomId).user_total) {
             socket.emit("room_join_error", {
-                error: "Room is full please choose another room  to play"
+                error: "Bu Oyun Odası Dolu"
             })
         } else {
 
@@ -59,21 +65,16 @@ export class RoomController {
         //get all socket joined user socket by room id 
         const connectedSockets = io.sockets.adapter.rooms.get(message.roomId);
 
-// TODO:: this steps show on frontend
+        // TODO:: this steps show on frontend
         if (connectedSockets) {
-            console.log(connectedSockets)
-            console.log(Array.from(connectedSockets))
-            const UserInRoom = Array
-                .from(connectedSockets)
-                .find((r) => r.includes(socket.id)) ? true : false
 
-            if (UserInRoom) {
-                console.log('Bu Oyuna Zaten Giriş Yapmıştın')
+            if (connectedSockets.has(socket.id)) {
+                socket.emit('on_check_user_in_room', 'user_already_in_room')
             } else {
-                console.log('Oyuna İlk kez Giriliyor')
+                socket.emit('on_check_user_in_room', 'user_not_in_room')
             }
         } else {
-            console.log('Odada Kullanıcı Bulunamadı')
+            socket.emit('on_check_user_in_room', 'room_is_empty')
         }
 
 

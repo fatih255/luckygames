@@ -83,7 +83,7 @@ router.post('/signin', (req, res) => {
                             //if the passwords matched
                             if (result) {
                                 //generate token with user info
-                                const token = generateAccessToken({ id: user.id, email: user.email, phone: user.phone, balance: user.balance, role: user.role });
+                                const token = generateAccessToken({ email: user.email, phone: user.phone,role:user.role });
                                 //setting the 'set-cookie'
                                 const isSecure = req.app.get('env') != 'development';
 
@@ -124,7 +124,7 @@ router.post('/signin', (req, res) => {
                         .then(function (result) {
                             //if the passwords matched
                             if (result) {
-                                const token = generateAccessToken({ id: user.id, email: user.email, phone: user.phone, balance: user.balance, role: user.role });
+                                const token = generateAccessToken({ email: user.email, phone: user.phone,role:user.role });
                                 const isSecure = req.app.get('env') != 'development';
                                 res
                                     .cookie('token', process.env.JWT_TOKEN_HEAD + ' ' + token, {
