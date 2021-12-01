@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import jwt_decode from 'jwt-decode';
 
 interface tokeninterface {
@@ -9,26 +9,66 @@ interface tokeninterface {
     exp: number
     // whatever else is in the JWT.
 }
-function validateToken(userToken: string | null, forNextMiddleware: boolean = true, split: string = '%20', requireAdmin: boolean = false) {
-   
-    let tokenvalidate = false;
+
+function validateToken(userToken: string | null, split: string = '%20', requireUser: boolean, requireAdmin: boolean = false, nextUrl: String | null = null) {
+
+    let tokenvalidate: NextResponse | boolean = false;
+
     if (userToken) {
         const token = userToken?.split(split)[1] || ''
         const decoded: tokeninterface = jwt_decode(token);
-
-        if (requireAdmin && decoded.role !== 'admin') {
-            return NextResponse.redirect(`/profile`)
-        }
         //not expired token time
         tokenvalidate = decoded.exp * 1000 > new Date().getTime()
-        //console.log(decoded)
-    } 
- 
-    if (forNextMiddleware) {
-        return tokenvalidate ? NextResponse.next() : NextResponse.redirect('/login')
+
+
+        if (tokenvalidate) {
+            //If it is mandatory to be an admin on the page that the user wants to enter, 
+            //and if he is not an administrator, 
+            //check the user role, 
+            //if he is not admin, direct him to the home page.
+            //and if user role is admin , he can access the admin route pages
+
+            if (requireAdmin) {
+                if (decoded.role !== 'admin') {
+                    //   console.log('1')
+                    return NextResponse.redirect(`/`)
+                } else {
+                    return NextResponse.next()
+                }
+            }
+
+            // if admin is not required page, user can access the page
+            if (!requireAdmin && requireUser) {
+                //  console.log('2')
+                return NextResponse.next()
+            }
+
+            //If the user is logged in but trying to go to the login and signup pages, redirect him to the home page.
+            if (nextUrl === '/login' || nextUrl === '/signup') {
+                // console.log('3')
+                return NextResponse.redirect(`/`)
+            }
+
+        } else {
+            //If require user and jwt token is expired, redirect user to login page
+            if (requireUser || requireAdmin) {
+                //console.log('4')
+                return NextResponse.redirect(`/login`)
+            } else {
+                return NextResponse.next()
+            }
+        }
+
     } else {
-        return tokenvalidate
+        //If not have token
+        if (requireUser || requireAdmin) {
+            // console.log('6')
+            return NextResponse.redirect(`/login`)
+        } else {
+            return NextResponse.next()
+        }
     }
+
 
 }
 

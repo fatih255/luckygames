@@ -14,11 +14,11 @@ export default function home() {
 
     const fetcher = (url: RequestInfo) => fetch(url, { credentials: 'include' }).then((res) => res.json())
     const user = useAppSelector(state => state.auth.user)
-    const { data, mutate } = useSWR(`${process.env.SERVER_BASE_URL}/api/user/get-all-active-game-rooms`, fetcher)
+    const { data, mutate, error } = useSWR(`${process.env.SERVER_BASE_URL}/api/user/get-all-active-game-rooms`, fetcher)
 
     if (socketService.socket) {
         roomService.sendAllRoomSize(socketService.socket, data)
-        
+
     }
 
     return (
@@ -33,7 +33,7 @@ export default function home() {
 
             <h1 className="text-white text-2xl text-center">Mevcut Oyun Odaları</h1>
             <div className="flex justify-center mx-20 my-20 ">
-                {data ? data?.map(({ id, label, user_total, participation_fee }: GameRoomCardProps) => (
+                {error ? <></> : data ? data?.map(({ id, label, user_total, participation_fee }: GameRoomCardProps) => (
                     <GameRoomCard
                         key={id}
                         id={id}

@@ -35,38 +35,34 @@ function generateAccessToken(infos: object) {
 
 async function validateToken(userToken: string | null, getinfo: boolean = false): Promise<boolean | object> {
 
-    let tokenvalidate: object | boolean = false;
-    if (userToken) {
-        const token = userToken?.split(' ')[1] || ''
 
-        return new Promise((rs, rj) => {
+    return new Promise((rs, rj) => {
+
+        //if token  have
+        if (userToken) {
             // invalid token
+            const token = userToken?.split(' ')[1] || ''
             jwt.verify(token, process.env.JWT_SECRET as string, function (err, decoded) {
                 if (!err) {
                     if (decoded?.exp as number * 1000 > new Date().getTime()) {
                         if (getinfo) {
-                            getOne(Number(decoded?.id))
+                            getOne(Number(decoded.id))
                                 .then(async (user: object) => {
                                     rs({ ...user })
                                 }).catch((err: any) => {
                                     rj(false)
                                 })
-
-                        } else {
-                            tokenvalidate = true
-                            rs(true)
                         }
-                    } else {
-                        rj(false)
                     }
                 } else {
-                    rj(false)
-                }
-            });
-        })
 
-    }
-    return tokenvalidate
+                }
+            })
+        } else {
+            rj(false)
+        }
+    });
+
 
 }
 

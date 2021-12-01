@@ -8,6 +8,6 @@ export function middleware(req: NextRequest, res: NextResponse) {
 
   const cookie = req.headers.get('cookie')
 
-  return validateToken(cookieparser(cookie as string)?.token, true, ' ', true)
+  return validateToken(cookieparser(cookie as string)?.token, ' ', true, true, req.nextUrl.pathname)
 
 }
