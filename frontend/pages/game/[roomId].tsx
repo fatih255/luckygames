@@ -13,7 +13,7 @@ import { useRouter } from 'next/router'
 import socketService from '../../services/socketService'
 import gameService from '../../services/gameService'
 import roomService from '../../services/roomService'
-import { changeJoinedUserTotal } from '../../redux/slices/gameSlice'
+import { changeJoinedUserTotal, changeloseCount } from '../../redux/slices/gameSlice'
 
 export default function room() { /*roomInfo: GameRoomCardProps */
 
@@ -41,26 +41,31 @@ export default function room() { /*roomInfo: GameRoomCardProps */
     const handleRoomValuesUpdate = () => {
         if (socketService.socket)
             roomService.onRoomUpdate(socketService.socket, (roomvalues) => {
-                roomId === roomvalues.id && dispatch(changeJoinedUserTotal(roomvalues.onlineUsers))
-
+                if(roomId ===roomvalues.id){
+                    dispatch(changeJoinedUserTotal(roomvalues.onlineUsers))
+                   // dispatch(changeloseCount(roomvalues.loseUsersSize))
+                }
             });
     };
 
     const userInRoom = async () => {
         if (socketService.socket) {
             const isUserInRoom = await roomService.checkUserInRoom(socketService.socket, roomId)
-          
+
+            //if user not in room show err and push game/home route
+            /*
             if (isUserInRoom === 'user_not_in_room' || isUserInRoom === 'room_is_empty') {
                 alert('Bu Oyun Odasına Katılmadınız')
                 router.push({
                     pathname: '/game/home'
                 })
             }
+             */
 
         }
     }
 
-
+    
     useEffect(() => {
         if (roomId) {
             userInRoom()
@@ -73,7 +78,7 @@ export default function room() { /*roomInfo: GameRoomCardProps */
             <div className=" col-span-4 lg:col-span-1 bg-white px-4 py-4 rounded-xl justify-start items-center ">
                 <div className="flex  flex-row justify-between items-center mb-4 flex-wrap">
                     <div className=" text-white text-3xl bg-blue-700 rounded-full tracking-tight fit px-4 py-2 mr-2">
-                        1.TUR
+                        {game.tour}.TUR
                     </div>
                     <span className="text-blue-700 text-2xl  flex font-bold " >
                         <FaUsers className="text-blue-700 w-8 h-8 " />{game.joinedUsersTotal}/{!data ? '-' : data.user_total}
@@ -115,8 +120,12 @@ export default function room() { /*roomInfo: GameRoomCardProps */
 
             <div className="bg-white flex row-span-3  rounded-xl  flex-col items-center ">
                 <h2 className="rounded-t-lg py-2 self-stretch border-b-[1px] border-blue-300 text-center bg-blue-100 text-xl font-semibold tracking-tight text-blue-900">Yarışmacılar</h2>
-                <div className="px-4 py-4 flex flex-row flex-wrap overflow-scroll overflow-x-hidden scrollbar-style justify-center behaviorsmooth">
-                    <Userdot count={100} />
+                <div className="w-full px-4 py-4 flex flex-row flex-wrap overflow-scroll overflow-x-hidden scrollbar-style justify-center behaviorsmooth">
+                    {game.joinedUsersTotal > 0 ?
+                        <Userdot count={Number(game.joinedUsersTotal)} loseUsersSize={game.loseCount} />
+                        : <span>Yarışmacı Yok</span>
+                    }
+
                 </div>
             </div>
 

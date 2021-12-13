@@ -4,14 +4,15 @@ class RoomService {
 
     public async updateRoom(socket: Socket, room: {
         id: number,
-        onlineUsers?: number
+        onlineUsers?: number,
+        loseCount?: number | 0
     }) {
-        socket.emit("all_update_room", { id: room.id, onlineUsers: room.onlineUsers });
+        socket.emit("all_update_room", { id: room.id, onlineUsers: room.onlineUsers,loseCount:room.loseCount });
     }
 
     public async onRoomUpdate(
         socket: Socket,
-        listiner: (listiner: { id: number, onlineUsers: number }) => void) {
+        listiner: (listiner: { id: number, onlineUsers: number, loseCount: number }) => void) {
         socket.on("on_all_room_update", (data) => listiner(data))
     }
 

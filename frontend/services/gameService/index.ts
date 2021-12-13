@@ -26,7 +26,21 @@ class GameService {
         socket.on("on_game_update", (data) => listiner(data))
     }
 
-   
+    public async GameStart(
+        socket: Socket,
+        roomId: number | string | null): Promise<any> {
+        return new Promise<any>((rs, rj) => {
+            socket.emit("game_start", { roomId });
+            socket.on("on_game_start", (data) => rs(data))
+        })
+    }
+
+    public async onGameStart(
+        socket: Socket,
+        listiner: (listiner: { sockets: any}) => void) {
+        socket.on("on_game_start", (data) => listiner(data))
+    }
+
 
 
 

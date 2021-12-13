@@ -22,6 +22,25 @@ export class GameController {
         const gameRoom = this.getSocketGameRoom(socket)
         socket.to(gameRoom).emit("on_game_update", message)
     }
+    @OnMessage("game_start")
+    public async GameStart(
+        @SocketIO() io: Server,
+        @ConnectedSocket() socket: Socket,
+        @MessageBody() message: any) {
+        //console.log('tttt', io.sockets.adapter.rooms.get(message.roomId))
+        const gameRoomArr = Array.from((io.sockets.adapter.rooms.get(message.roomId)))
+        const p1 = gameRoomArr.slice(0, gameRoomArr.length / 2)
+        const p2 = gameRoomArr.slice(gameRoomArr.length / 2, gameRoomArr.length)
+        console.log(gameRoomArr, gameRoomArr[1])
+        const gameMatches = {
+            p1: { ...p1 },
+            p2: { ...p2 }
+        }
+        console.log(gameMatches)
+        const currentGameRoom = this.getSocketGameRoom(socket)
+        socket.to(currentGameRoom).emit("on_game_start", gameMatches)
+    }
+
 
 
 
